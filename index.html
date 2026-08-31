@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TNPSC திருக்குறள் - 1330 குறள்கள்</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- 👇 1. உங்களது AdSense Script-ஐ இங்கே சேர்க்கவும் 👇 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+  <style>
+    @keyframes fade-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .animate-bounce-subtle { animation: bounce-subtle 3s ease-in-out infinite; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    body { margin: 0; padding: 0; background-color: #111827; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const ATHIGARAMS_LIST = [
+      // அறத்துப்பால் (1 - 38)
+      { no: 1, name: "கடவுள் வாழ்த்து", paal: "அறத்துப்பால்" }, { no: 2, name: "வான்சிறப்பு", paal: "அறத்துப்பால்" },
+      { no: 3, name: "நீத்தார் பெருமை", paal: "அறத்துப்பால்" }, { no: 4, name: "அறன் வலியுறுத்தல்", paal: "அறத்துப்பால்" },
+      { no: 5, name: "இல்வாழ்க்கை", paal: "அறத்துப்பால்" }, { no: 6, name: "வாழ்க்கைத் துணைநலம்", paal: "அறத்துப்பால்" },
+      { no: 7, name: "மக்கட்பேறு", paal: "அறத்துப்பால்" }, { no: 8, name: "அன்புடைமை", paal: "அறத்துப்பால்" },
+      { no: 9, name: "விருந்தோம்பல்", paal: "அறத்துப்பால்" }, { no: 10, name: "இனியவை கூறல்", paal: "அறத்துப்பால்" },
+      { no: 11, name: "செய்ந்நன்றியறிதல்", paal: "அறத்துப்பால்" }, { no: 12, name: "நடுவுநிலைமை", paal: "அறத்துப்பால்" },
+      { no: 13, name: "அடக்கமுடைமை", paal: "அறத்துப்பால்" }, { no: 14, name: "ஒழுக்கமுடைமை", paal: "அறத்துப்பால்" },
+      { no: 15, name: "பிறனில் விழையாமை", paal: "அறத்துப்பால்" }, { no: 16, name: "பொறையுடைமை", paal: "அறத்துப்பால்" },
+      { no: 17, name: "அழுக்காறாமை", paal: "அறத்துப்பால்" }, { no: 18, name: "வெஃகாமை", paal: "அறத்துப்பால்" },
+      { no: 19, name: "புறங்கூறாமை", paal: "அறத்துப்பால்" }, { no: 20, name: "பயனில சொல்லாமை", paal: "அறத்துப்பால்" },
+      { no: 21, name: "தீவினையச்சம்", paal: "அறத்துப்பால்" }, { no: 22, name: "ஒப்புரவறிதல்", paal: "அறத்துப்பால்" },
+      { no: 23, name: "ஈகை", paal: "அறத்துப்பால்" }, { no: 24, name: "புகழ்", paal: "அறத்துப்பால்" },
+      { no: 25, name: "அருளுடைமை", paal: "அறத்துப்பால்" }, { no: 26, name: "புலால் மறுத்தல்", paal: "அறத்துப்பால்" },
+      { no: 27, name: "தவம்", paal: "அறத்துப்பால்" }, { no: 28, name: "கூடாவொழுக்கம்", paal: "அறத்துப்பால்" },
+      { no: 29, name: "கள்ளாமை", paal: "அறத்துப்பால்" }, { no: 30, name: "வாய்மை", paal: "அறத்துப்பால்" },
+      { no: 31, name: "வெகுளாமை", paal: "அறத்துப்பால்" }, { no: 32, name: "இன்னா செய்யாமை", paal: "அறத்துப்பால்" },
+      { no: 33, name: "கொல்லாமை", paal: "அறத்துப்பால்" }, { no: 34, name: "நிலையாமை", paal: "அறத்துப்பால்" },
+      { no: 35, name: "துறவு", paal: "அறத்துப்பால்" }, { no: 36, name: "மெய்யுணர்தல்", paal: "அறத்துப்பால்" },
+      { no: 37, name: "அவாவறுத்தல்", paal: "அறத்துப்பால்" }, { no: 38, name: "ஊழ்", paal: "அறத்துப்பால்" },
+      
+      // பொருட்பால் (39 - 108)
+      { no: 39, name: "இறைமாட்சி", paal: "பொருட்பால்" }, { no: 40, name: "கல்வி", paal: "பொருட்பால்" },
+      { no: 41, name: "கல்லாமை", paal: "பொருட்பால்" }, { no: 42, name: "கேள்வி", paal: "பொருட்பால்" },
+      { no: 43, name: "அறிவுடைமை", paal: "பொருட்பால்" }, { no: 44, name: "குற்றங்கடிதல்", paal: "பொருட்பால்" },
+      { no: 45, name: "பெரியாரைத் துணைக்கோடல்", paal: "பொருட்பால்" }, { no: 46, name: "சிற்றினம் சேராமை", paal: "பொருட்பால்" },
+      { no: 47, name: "தெரிந்து செயல்வகை", paal: "பொருட்பால்" }, { no: 48, name: "வலியறிதல்", paal: "பொருட்பால்" },
+      { no: 49, name: "காலமறிதல்", paal: "பொருட்பால்" }, { no: 50, name: "இடனறிதல்", paal: "பொருட்பால்" },
+      { no: 51, name: "தெரிந்து தெளிதல்", paal: "பொருட்பால்" }, { no: 52, name: "தெரிந்து வினையாடல்", paal: "பொருட்பால்" },
+      { no: 53, name: "சுற்றந்தழால்", paal: "பொருட்பால்" }, { no: 54, name: "பொச்சாவாமை", paal: "பொருட்பால்" },
+      { no: 55, name: "செங்கோன்மை", paal: "பொருட்பால்" }, { no: 56, name: "கொடுங்கோன்மை", paal: "பொருட்பால்" },
+      { no: 57, name: "வெருவந்த செய்யாமை", paal: "பொருட்பால்" }, { no: 58, name: "கண்ணோட்டம்", paal: "பொருட்பால்" },
+      { no: 59, name: "ஒற்றாடல்", paal: "பொருட்பால்" }, { no: 60, name: "ஊக்கமுடைமை", paal: "பொருட்பால்" },
+      { no: 61, name: "மடியின்மை", paal: "பொருட்பால்" }, { no: 62, name: "ஆள்வினையுடைமை", paal: "பொருட்பால்" },
+      { no: 63, name: "இடுக்கணழியாமை", paal: "பொருட்பால்" }, { no: 64, name: "அமைச்சு", paal: "பொருட்பால்" },
+      { no: 65, name: "சொல்வன்மை", paal: "பொருட்பால்" }, { no: 66, name: "வினைத்தூய்மை", paal: "பொருட்பால்" },
+      { no: 67, name: "வினைத்திட்பம்", paal: "பொருட்பால்" }, { no: 68, name: "வினைசெயல்வகை", paal: "பொருட்பால்" },
+      { no: 69, name: "தூது", paal: "பொருட்பால்" }, { no: 70, name: "மன்னரைச் சேர்ந்தொழுகல்", paal: "பொருட்பால்" },
+      { no: 71, name: "குறிப்பறிதல்", paal: "பொருட்பால்" }, { no: 72, name: "அவையறிதல்", paal: "பொருட்பால்" },
+      { no: 73, name: "அவையஞ்சாமை", paal: "பொருட்பால்" }, { no: 74, name: "நாடு", paal: "பொருட்பால்" },
+      { no: 75, name: "அரண்", paal: "பொருட்பால்" }, { no: 76, name: "பொருள்செயல்வகை", paal: "பொருட்பால்" },
+      { no: 77, name: "படைமாட்சி", paal: "பொருட்பால்" }, { no: 78, name: "படைச்செருக்கு", paal: "பொருட்பால்" },
+      { no: 79, name: "நட்பு", paal: "பொருட்பால்" }, { no: 80, name: "நட்பாராய்தல்", paal: "பொருட்பால்" },
+      { no: 81, name: "பழைமை", paal: "பொருட்பால்" }, { no: 82, name: "தீநட்பு", paal: "பொருட்பால்" },
+      { no: 83, name: "கூடாநட்பு", paal: "பொருட்பால்" }, { no: 84, name: "பேதைமை", paal: "பொருட்பால்" },
+      { no: 85, name: "புல்லறிவாண்மை", paal: "பொருட்பால்" }, { no: 86, name: "இகல்", paal: "பொருட்பால்" },
+      { no: 87, name: "பகைமாட்சி", paal: "பொருட்பால்" }, { no: 88, name: "பகைத்திறந்தெரிதல்", paal: "பொருட்பால்" },
+      { no: 89, name: "உட்பகை", paal: "பொருட்பால்" }, { no: 90, name: "பெரியாரைப் பிழையாமை", paal: "பொருட்பால்" },
+      { no: 91, name: "பெண்வழிச் சேறல்", paal: "பொருட்பால்" }, { no: 92, name: "வரைவின் மகளிர்", paal: "பொருட்பால்" },
+      { no: 93, name: "கள்ளுண்ணாமை", paal: "பொருட்பால்" }, { no: 94, name: "சூது", paal: "பொருட்பால்" },
+      { no: 95, name: "மருந்து", paal: "பொருட்பால்" }, { no: 96, name: "குடிமை", paal: "பொருட்பால்" },
+      { no: 97, name: "மானம்", paal: "பொருட்பால்" }, { no: 98, name: "பெருமை", paal: "பொருட்பால்" },
+      { no: 99, name: "சான்றாண்மை", paal: "பொருட்பால்" }, { no: 100, name: "பண்புடைமை", paal: "பொருட்பால்" },
+      { no: 101, name: "நன்றியில் செல்வம்", paal: "பொருட்பால்" }, { no: 102, name: "நாணுடைமை", paal: "பொருட்பால்" },
+      { no: 103, name: "குடிசெயல்வகை", paal: "பொருட்பால்" }, { no: 104, name: "உழவு", paal: "பொருட்பால்" },
+      { no: 105, name: "நல்குரவு", paal: "பொருட்பால்" }, { no: 106, name: "இரவு", paal: "பொருட்பால்" },
+      { no: 107, name: "இரவச்சம்", paal: "பொருட்பால்" }, { no: 108, name: "கயமை", paal: "பொருட்பால்" },
+
+      // காமத்துப்பால் (109 - 133)
+      { no: 109, name: "தகையணங்குறுத்தல்", paal: "காமத்துப்பால்" }, { no: 110, name: "குறிப்பறிதல்", paal: "காமத்துப்பால்" },
+      { no: 111, name: "புணர்ச்சி மகிழ்தல்", paal: "காமத்துப்பால்" }, { no: 112, name: "நலம் புனைந்துரைத்தல்", paal: "காமத்துப்பால்" },
+      { no: 113, name: "காதற் சிறப்புரைத்தல்", paal: "காமத்துப்பால்" }, { no: 114, name: "நாணுத்துறவுரைத்தல்", paal: "காமத்துப்பால்" },
+      { no: 115, name: "அலரறிவுறுத்தல்", paal: "காமத்துப்பால்" }, { no: 116, name: "பிரிவாற்றாமை", paal: "காமத்துப்பால்" },
+      { no: 117, name: "படர்மெலிந்திரங்கல்", paal: "காமத்துப்பால்" }, { no: 118, name: "கண்விதுப்பழிதல்", paal: "காமத்துப்பால்" },
+      { no: 119, name: "பசப்புறுபருவரல்", paal: "காமத்துப்பால்" }, { no: 120, name: "தனிப்படர்மிகுதி", paal: "காமத்துப்பால்" },
+      { no: 121, name: "நினைந்தவர் புலம்பல்", paal: "காமத்துப்பால்" }, { no: 122, name: "கனவுநிலையுரைத்தல்", paal: "காமத்துப்பால்" },
+      { no: 123, name: "பொழுதுகண்டு இரங்கல்", paal: "காமத்துப்பால்" }, { no: 124, name: "உறுப்புநலனழிதல்", paal: "காமத்துப்பால்" },
+      { no: 125, name: "நெஞ்சொடுகிளத்தல்", paal: "காமத்துப்பால்" }, { no: 126, name: "நிறையழிதல்", paal: "காமத்துப்பால்" },
+      { no: 127, name: "அவர்வயின்விதும்பல்", paal: "காமத்துப்பால்" }, { no: 128, name: "குறிப்பறிவுறுத்தல்", paal: "காமத்துப்பால்" },
+      { no: 129, name: "புணர்ச்சிவிதும்பல்", paal: "காமத்துப்பால்" }, { no: 130, name: "நெஞ்சொடுபுலத்தல்", paal: "காமத்துப்பால்" },
+      { no: 131, name: "புலவி", paal: "காமத்துப்பால்" }, { no: 132, name: "புலவி நுணுக்கம்", paal: "காமத்துப்பால்" },
+      { no: 133, name: "ஊடலுவகை", paal: "காமத்துப்பால்" }
+    ];
+
+    // 👇 2. AdSense React Component 👇
+    const AdSenseWidget = ({ adSlot }) => {
+      const adContainerRef = useRef(null);
+
+      useEffect(() => {
+        let attempt = 0;
+        let timeoutId;
+
+        // Function to reliably push the ad only when the container has a valid width
+        const pushAd = () => {
+          if (adContainerRef.current && adContainerRef.current.offsetWidth > 0) {
+            try {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+              console.error("AdSense Error: ", e);
+            }
+          } else if (attempt < 10) {
+            // Retry if the container width is still 0 (e.g., during React transitions/animations)
+            attempt++;
+            timeoutId = setTimeout(pushAd, 250);
+          }
+        };
+
+        // Start attempt
+        timeoutId = setTimeout(pushAd, 100);
+
+        return () => clearTimeout(timeoutId);
+      }, []);
+
+      return (
+        <div ref={adContainerRef} className="w-full bg-slate-100 flex justify-center items-center rounded-2xl overflow-hidden my-4 min-h-[100px] border border-slate-200">
+          <ins className="adsbygoogle"
+               style={{ display: "block", minWidth: "250px", width: "100%", textAlign: "center" }}
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" /* உங்களது Publisher ID */
+               data-ad-slot={adSlot}                    /* உங்களது Ad Slot ID */
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+      );
+    };
+
+    const App = () => {
+      const [currentView, setCurrentView] = useState('home'); 
+      const [athigaramData, setAthigaramData] = useState(null);
+      const [selectedKural, setSelectedKural] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [totalViews, setTotalViews] = useState('...');
+
+      useEffect(() => {
+        const hasViewed = sessionStorage.getItem('tnpsc_app_viewed');
+        if (!hasViewed) {
+          fetch('https://api.counterapi.dev/v1/tnpsc_thirukkural_app_v2/views/up')
+            .then(res => res.json())
+            .then(data => {
+              setTotalViews(data.count);
+              sessionStorage.setItem('tnpsc_app_viewed', 'true');
+            })
+            .catch(() => setTotalViews('...'));
+        } else {
+          fetch('https://api.counterapi.dev/v1/tnpsc_thirukkural_app_v2/views')
+            .then(res => res.json())
+            .then(data => setTotalViews(data.count))
+            .catch(() => setTotalViews('...'));
+        }
+      }, []);
+
+      const fetchAthigaram = async (no) => {
+        setLoading(true);
+        setCurrentView('athigaram');
+        
+        // 🔴 Google Sheet API URL (Apps Script Deploy URL-ஐ இங்கே தரவும்) 🔴
+        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; 
+        
+        try {
+          if (!GOOGLE_SHEET_API_URL.includes("YOUR_SCRIPT_ID")) {
+            const response = await fetch(`${GOOGLE_SHEET_API_URL}?athigaram=${no}`);
+            const data = await response.json();
+            
+            if (data.kurals && data.kurals.length > 0) {
+              setAthigaramData(data);
+            } else {
+              const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
+              setAthigaramData({
+                  athigaramNo: no,
+                  athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
+                  kurals: [],
+                  message: "இந்த அதிகாரத்திற்கான குறள்கள் Sheet-ல் சேர்க்கப்படவில்லை."
+              });
+            }
+          } else {
+            // Fallback for missing URL
+            setTimeout(() => {
+              const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
+              setAthigaramData({
+                  athigaramNo: no,
+                  athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
+                  kurals: [],
+                  message: "உங்களது Google Sheets API URL-ஐ Index.html கோப்பில் சேர்க்கவும்."
+              });
+              setLoading(false);
+            }, 800);
+            return;
+          }
+        } catch (error) {
+          console.error("Error fetching data: ", error);
+          const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
+          setAthigaramData({ 
+              athigaramNo: no, 
+              athigaram: `அதிகாரம் ${no} - ${athigaramName}`, 
+              kurals: [], 
+              message: "நெட்வொர்க் பிழை அல்லது API URL தவறாக உள்ளது. தயவுசெய்து GOOGLE_SHEET_API_URL ஐச் சரிபார்க்கவும்." 
+          });
+        }
+        setLoading(false);
+      };
+
+      const handleKuralSelect = (kural) => {
+        setSelectedKural(kural);
+        setCurrentView('kural');
+      };
+
+      const goBack = () => {
+        if (currentView === 'kural') setCurrentView('athigaram');
+        else if (currentView === 'athigaram') {
+          setCurrentView('home');
+          setAthigaramData(null);
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-900 flex justify-center items-center font-sans text-slate-800">
+          <div className="w-full max-w-md h-[100dvh] bg-slate-50 flex flex-col relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[8px] border-slate-800">
+            
+            {/* VIEW 1: HOME SCREEN */}
+            {currentView === 'home' && (
+              <div className="flex flex-col h-full animate-fade-in">
+                <header className="bg-blue-600 text-white pt-12 pb-6 px-5 rounded-b-3xl shadow-md z-10 shrink-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h1 className="text-2xl font-black tracking-wide">TNPSC திருக்குறள்</h1>
+                      <p className="text-blue-100 mt-1 text-sm font-medium opacity-90">1330 குறள்கள் - தேர்வுக் களஞ்சியம்</p>
+                    </div>
+                    <div className="bg-blue-800/60 px-3 py-1.5 rounded-xl border border-blue-400/30 flex items-center gap-2 shadow-inner">
+                       <span className="text-sm">👁️</span>
+                       <div className="flex flex-col">
+                         <span className="text-[9px] text-blue-200 uppercase font-black tracking-wider leading-none mb-0.5">பார்வைகள்</span>
+                         <span className="text-sm font-black text-white leading-none">{totalViews}</span>
+                       </div>
+                    </div>
+                  </div>
+                </header>
+                
+                <main className="flex-1 overflow-y-auto p-4 pb-10 space-y-6 hide-scrollbar">
+                  
+                  {/* 👇 விளம்பரம்: முகப்புப் பக்கத்தில் 👇 */}
+                  <AdSenseWidget adSlot="1111111111" />
+
+                  {['அறத்துப்பால்', 'பொருட்பால்', 'காமத்துப்பால்'].map(paal => (
+                    <div key={paal} className="space-y-3">
+                      <h3 className="font-black text-slate-400 uppercase text-[11px] tracking-widest pl-2">{paal}</h3>
+                      <div className="grid grid-cols-1 gap-2">
+                        {ATHIGARAMS_LIST.filter(a => a.paal === paal).map(athigaram => (
+                          <button 
+                            key={athigaram.no}
+                            onClick={() => fetchAthigaram(athigaram.no)}
+                            className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-left flex justify-between items-center active:scale-95 transition-transform"
+                          >
+                            <div>
+                              <span className="text-[10px] font-bold text-blue-500 mb-1 block">அதிகாரம் {athigaram.no}</span>
+                              <span className="font-bold text-slate-700">{athigaram.name}</span>
+                            </div>
+                            <span className="text-slate-300">➡️</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </main>
+              </div>
+            )}
+
+            {/* VIEW 2: ATHIGARAM LIST */}
+            {currentView === 'athigaram' && (
+              <div className="flex flex-col h-full animate-fade-in bg-slate-50 absolute inset-0 z-10">
+                <header className="bg-blue-600 text-white pt-12 pb-6 px-4 rounded-b-3xl shadow-md z-10 shrink-0 flex items-center">
+                  <button onClick={goBack} className="p-2 -ml-2 mr-2 rounded-full active:bg-blue-700 transition-colors">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                  </button>
+                  <div>
+                    <h1 className="text-xl font-black tracking-wide">{athigaramData?.athigaram || 'ஏற்றப்படுகிறது...'}</h1>
+                  </div>
+                </header>
+
+                <main className="flex-1 overflow-y-auto p-4 pb-10 space-y-4 hide-scrollbar">
+                  
+                  {/* 👇 விளம்பரம்: அதிகாரப் பட்டியலில் 👇 */}
+                  {!loading && <AdSenseWidget adSlot="2222222222" />}
+
+                  {loading ? (
+                    <div className="h-full flex flex-col items-center justify-center pt-20">
+                       <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                       <p className="mt-4 text-slate-500 font-bold text-sm">Google Sheets-லிருந்து எடுக்கப்படுகிறது...</p>
+                    </div>
+                  ) : athigaramData?.kurals && athigaramData.kurals.length > 0 ? (
+                    athigaramData.kurals.map((kural) => (
+                      <div 
+                        key={kural.no} 
+                        onClick={() => handleKuralSelect(kural)}
+                        className="bg-white p-5 rounded-3xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 cursor-pointer transition-transform active:scale-95"
+                      >
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="bg-blue-50 text-blue-700 text-xs font-black px-3 py-1 rounded-full tracking-wider">
+                            குறள் {kural.no}
+                          </span>
+                          <span className="text-slate-300">➡️</span>
+                        </div>
+                        <div className="text-left pl-2 border-l-[3px] border-blue-500 mb-2">
+                          <p className="font-bold text-[15px] leading-snug text-slate-800 mb-1">{kural.kural_l1}</p>
+                          <p className="font-bold text-[15px] leading-snug text-slate-800">{kural.kural_l2}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          <span className="text-[10px] font-bold bg-slate-50 text-slate-500 px-2 py-1 rounded-md">📖 கதை</span>
+                          <span className="text-[10px] font-bold bg-slate-50 text-slate-500 px-2 py-1 rounded-md">📝 இலக்கணம்</span>
+                          <span className="text-[10px] font-bold bg-slate-50 text-slate-500 px-2 py-1 rounded-md">🎯 பயிற்சி</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center p-8 mt-10 bg-white rounded-[2rem] border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)]">
+                      <div className="text-6xl mb-6 animate-bounce-subtle">🚧</div>
+                      <h3 className="text-xl font-black text-slate-800 mb-2">தரவுகள் தயாராகி வருகிறது!</h3>
+                      <p className="text-[14px] text-slate-500 font-medium leading-relaxed mb-6">நீங்கள் தேர்ந்தெடுத்த அதிகாரத்திற்கான கதைகள் விரைவில் இணைக்கப்படும்.</p>
+                      <div className="bg-blue-50 p-4 rounded-2xl text-left border border-blue-100">
+                         <p className="text-xs font-bold text-blue-800 uppercase mb-1">Developer-க்கான குறிப்பு:</p>
+                         <p className="text-[11px] text-blue-600 leading-relaxed">Google Sheet API URL சரியாகக் கொடுக்கப்பட்டுள்ளதா எனச் சரிபார்க்கவும்.</p>
+                      </div>
+                    </div>
+                  )}
+                </main>
+              </div>
+            )}
+
+            {/* VIEW 3: KURAL DETAIL */}
+            {currentView === 'kural' && selectedKural && (
+              <KuralDetailView kural={selectedKural} athigaram={athigaramData.athigaram} onBack={goBack} />
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const KuralDetailView = ({ kural, athigaram, onBack }) => {
+      const [activeTab, setActiveTab] = useState('kural'); 
+      const tabs = [
+        { id: 'kural', icon: '📝', label: 'விளக்கம்' },
+        { id: 'story', icon: '🎨', label: 'கதை' },
+        { id: 'grammar', icon: '📚', label: 'இலக்கணம்' },
+        { id: 'quiz', icon: '🎯', label: 'பயிற்சி' },
+      ];
+
+      return (
+        <div className="flex flex-col h-full bg-slate-50 animate-fade-in w-full absolute inset-0 z-20">
+          <div className="bg-white pt-12 pb-4 px-4 shadow-sm border-b border-slate-100 flex items-center shrink-0">
+            <button onClick={onBack} className="p-2 -ml-2 rounded-full active:bg-slate-100 text-slate-700 transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <div className="ml-2 flex-1">
+              <h2 className="font-black text-lg text-slate-800">குறள் {kural.no}</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{athigaram}</p>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 pb-32 hide-scrollbar">
+            
+            {/* 👇 விளம்பரம்: குறள் விளக்கப் பக்கத்தில் 👇 */}
+            <AdSenseWidget adSlot="3333333333" />
+
+            {activeTab === 'kural' && <KuralMeaning kural={kural} />}
+            {activeTab === 'story' && <EmojiStory story={kural.story} />}
+            {activeTab === 'grammar' && <GrammarView notes={kural.ilakkanam} />}
+            {activeTab === 'quiz' && <QuizView questions={kural.quiz} />}
+          </div>
+
+          <div className="absolute bottom-0 w-full bg-white border-t border-slate-100 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)] flex justify-around items-center pt-2 pb-8 px-2 z-30 shrink-0 rounded-b-3xl">
+            {tabs.map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                  className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all active:scale-95 ${activeTab === tab.id ? 'text-blue-600' : 'text-slate-400'}`}>
+                  <div className={`text-2xl mb-1 transition-transform ${activeTab === tab.id ? 'scale-110' : 'scale-100 grayscale opacity-70'}`}>{tab.icon}</div>
+                  <span className={`text-[10px] font-bold ${activeTab === tab.id ? 'opacity-100' : 'opacity-70'}`}>{tab.label}</span>
+                  <div className={`h-1 w-1 rounded-full mt-1 transition-all ${activeTab === tab.id ? 'bg-blue-600' : 'bg-transparent'}`} />
+                </button>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    const KuralMeaning = ({ kural }) => (
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 animate-fade-in flex flex-col justify-center mt-2 min-h-[50vh]">
+        <div className="mb-8 relative border-l-4 border-blue-600 pl-5 text-left bg-blue-50/30 p-4 rounded-r-2xl">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed mb-2">{kural.kural_l1}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">{kural.kural_l2}</h3>
+        </div>
+        <div className="bg-blue-50/50 p-5 rounded-2xl">
+          <div className="flex items-center gap-2 mb-3"><span className="text-blue-600">💡</span><h4 className="text-xs font-black text-blue-800 uppercase tracking-widest">பொருள்</h4></div>
+          <p className="text-slate-700 text-[15px] leading-relaxed font-medium text-justify">{kural.meaning}</p>
+        </div>
+      </div>
+    );
+
+    const EmojiStory = ({ story }) => {
+      const [slide, setSlide] = useState(0);
+      const nextSlide = () => { if (slide < story.length - 1) setSlide(slide + 1); };
+      const prevSlide = () => { if (slide > 0) setSlide(slide - 1); };
+
+      const handleCardTap = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        if (clickX > rect.width / 2) nextSlide(); else prevSlide();
+      };
+
+      return (
+        <div className="flex flex-col h-full animate-fade-in pb-2 mt-2">
+          <div className="flex gap-1.5 mb-4 px-2">
+            {story.map((_, i) => <div key={i} className={`h-1.5 rounded-full flex-1 transition-all duration-300 ${i <= slide ? 'bg-blue-500' : 'bg-slate-200'}`} />)}
+          </div>
+          <div onClick={handleCardTap} className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden flex-1 flex flex-col justify-center items-center p-6 text-center min-h-[40vh] relative cursor-pointer active:scale-[0.99] transition-transform">
+            <div className="absolute top-4 right-5 bg-slate-100 text-slate-400 text-[10px] font-bold px-3 py-1 rounded-full">{slide + 1} / {story.length}</div>
+            <div className="text-6xl mb-6 animate-bounce-subtle drop-shadow-md select-none" key={slide + 'emoji'}>{story[slide].emoji}</div>
+            <p className="text-[14px] sm:text-[15px] font-semibold text-slate-700 leading-relaxed w-full px-2 select-none">{story[slide].text}</p>
+          </div>
+          <div className="flex gap-3 mt-4 shrink-0">
+            <button onClick={prevSlide} disabled={slide === 0} className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold transition-all active:scale-95 ${slide === 0 ? 'bg-slate-100 text-slate-300' : 'bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-50'}`}>முந்தைய</button>
+            <button onClick={nextSlide} disabled={slide === story.length - 1} className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold transition-all active:scale-95 ${slide === story.length - 1 ? 'bg-slate-100 text-slate-300' : 'bg-blue-600 text-white shadow-md hover:bg-blue-700'}`}>அடுத்தது</button>
+          </div>
+        </div>
+      );
+    };
+
+    const GrammarView = ({ notes }) => (
+      <div className="animate-fade-in mt-2">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-5 rounded-3xl text-white mb-4 shadow-md">
+          <h3 className="text-lg font-black flex items-center gap-2"><span className="text-2xl">📝</span> இலக்கணக் குறிப்புகள்</h3>
+        </div>
+        <div className="space-y-3">
+          {notes.map((note, idx) => {
+            const parts = note.split('-');
+            return (
+              <div key={idx} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-3">
+                <div className="bg-blue-50 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"><span className="text-blue-600 font-bold text-xs">{idx + 1}</span></div>
+                <div className="text-[14px] leading-relaxed font-medium text-slate-600 mt-1">
+                  {parts.length > 1 ? <><span className="text-slate-900 font-bold bg-amber-100/50 px-1 rounded inline-block mb-1">{parts[0].trim()}</span> <br/><span className="text-slate-500 text-xs">➡️ {parts.slice(1).join('-').trim()}</span></> : note}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+
+    const QuizView = ({ questions }) => {
+      const [currentQ, setCurrentQ] = useState(0);
+      const [score, setScore] = useState(0);
+      const [showResult, setShowResult] = useState(false);
+      const [selectedAns, setSelectedAns] = useState(null); 
+
+      const handleOptionClick = (idx) => {
+        if (selectedAns !== null) return; 
+        setSelectedAns(idx);
+        if (idx === questions[currentQ].ans) setScore(score + 1);
+        setTimeout(() => {
+          if (currentQ < questions.length - 1) { setCurrentQ(currentQ + 1); setSelectedAns(null); } 
+          else { setShowResult(true); }
+        }, 1000); 
+      };
+
+      if (showResult) {
+        return (
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 text-center animate-fade-in min-h-[60vh] flex flex-col justify-center items-center mt-2">
+            <div className="text-8xl mb-6 animate-bounce-subtle">{score === questions.length ? '🏆' : score > 2 ? '🌟' : '📚'}</div>
+            <h2 className="text-2xl font-black text-slate-800 mb-2">பயிற்சி நிறைவு!</h2>
+            <div className="bg-slate-50 px-6 py-4 rounded-2xl mb-8 w-full">
+               <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">மதிப்பெண்</p>
+               <p className="text-4xl font-black text-blue-600">{score} <span className="text-xl text-slate-400">/ {questions.length}</span></p>
+            </div>
+            <button onClick={() => {setCurrentQ(0); setScore(0); setShowResult(false); setSelectedAns(null);}} className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-black active:scale-95 transition-all">மீண்டும் முயற்சிக்க 🔄</button>
+          </div>
+        );
+      }
+
+      const q = questions[currentQ];
+      return (
+        <div className="animate-fade-in flex flex-col h-full mt-2">
+          <div className="flex gap-1 mb-6">
+            {questions.map((_, idx) => <div key={idx} className={`h-1.5 rounded-full flex-1 ${idx < currentQ ? 'bg-blue-600' : idx === currentQ ? 'bg-blue-400' : 'bg-slate-200'}`} />)}
+          </div>
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 mb-6 relative">
+            <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-900 text-[10px] font-black px-3 py-1 rounded-full shadow-sm transform rotate-3">கேள்வி {currentQ + 1}</div>
+            <h3 className="text-lg font-bold text-slate-800 leading-relaxed mt-2">{q.q}</h3>
+          </div>
+          <div className="space-y-3 pb-8">
+            {q.options.map((opt, idx) => {
+              let btnClass = "w-full text-left p-4 rounded-2xl border-2 font-bold transition-all active:scale-[0.98] flex justify-between items-center ";
+              if (selectedAns === null) btnClass += "bg-white border-slate-100 text-slate-600 shadow-sm";
+              else if (idx === q.ans) btnClass += "bg-green-50 border-green-500 text-green-700 shadow-sm scale-[1.02]";
+              else if (idx === selectedAns) btnClass += "bg-red-50 border-red-400 text-red-600";
+              else btnClass += "bg-white border-slate-100 opacity-40";
+              return (
+                <button key={idx} onClick={() => handleOptionClick(idx)} className={btnClass} disabled={selectedAns !== null}>
+                  <span className="text-[15px]">{opt}</span>
+                  {selectedAns !== null && idx === q.ans && <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">✓</span>}
+                  {selectedAns !== null && idx === selectedAns && idx !== q.ans && <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">✕</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
