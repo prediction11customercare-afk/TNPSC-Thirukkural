@@ -15,7 +15,7 @@
   <!-- Babel for JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- 👇 1. உங்களது AdSense Script-ஐ இங்கே சேர்க்கவும் 👇 -->
+  <!-- 👇 1. உங்களது AdSense Script 👇 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 
   <style>
@@ -109,7 +109,6 @@
       { no: 133, name: "ஊடலுவகை", paal: "காமத்துப்பால்" }
     ];
 
-    // 👇 2. AdSense React Component 👇
     const AdSenseWidget = ({ adSlot }) => {
       const adContainerRef = useRef(null);
 
@@ -117,7 +116,6 @@
         let attempt = 0;
         let timeoutId;
 
-        // Function to reliably push the ad only when the container has a valid width
         const pushAd = () => {
           if (adContainerRef.current && adContainerRef.current.offsetWidth > 0) {
             try {
@@ -126,15 +124,12 @@
               console.error("AdSense Error: ", e);
             }
           } else if (attempt < 10) {
-            // Retry if the container width is still 0 (e.g., during React transitions/animations)
             attempt++;
             timeoutId = setTimeout(pushAd, 250);
           }
         };
 
-        // Start attempt
         timeoutId = setTimeout(pushAd, 100);
-
         return () => clearTimeout(timeoutId);
       }, []);
 
@@ -142,8 +137,8 @@
         <div ref={adContainerRef} className="w-full bg-slate-100 flex justify-center items-center rounded-2xl overflow-hidden my-4 min-h-[100px] border border-slate-200">
           <ins className="adsbygoogle"
                style={{ display: "block", minWidth: "250px", width: "100%", textAlign: "center" }}
-               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" /* உங்களது Publisher ID */
-               data-ad-slot={adSlot}                    /* உங்களது Ad Slot ID */
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
+               data-ad-slot={adSlot}                    
                data-ad-format="auto"
                data-full-width-responsive="true"></ins>
         </div>
@@ -175,54 +170,55 @@
         }
       }, []);
 
-      const fetchAthigaram = async (no) => {
+      // 🔴 'async/await' நீக்கப்பட்டு 100% பாதுகாப்பான '.then()' முறை பயன்படுத்தப்பட்டுள்ளது 🔴
+      const fetchAthigaram = (no) => {
         setLoading(true);
         setCurrentView('athigaram');
         
-        // 🔴 Google Sheet API URL (Apps Script Deploy URL-ஐ இங்கே தரவும்) 🔴
-        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz9RAfrYGwpE3NcjFbhxzgk6k13iIR_VHovQzgT6YjM-m5FmezyYzeuPZ5LOwK3LpIc/exec"; 
+        // உங்களது சரியான API URL கீழே இணைக்கப்பட்டுள்ளது.
+        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwnN7dq45JOi9PC6e2a66hGGp3uKJlQV5wP-nv77Zk8tY_kdLF1_q-qWqrc6-quFSqa/exec"; 
         
-        try {
-          if (!GOOGLE_SHEET_API_URL.includes("YOUR_SCRIPT_ID")) {
-            const response = await fetch(`${GOOGLE_SHEET_API_URL}?athigaram=${no}`);
-            const data = await response.json();
-            
-            if (data.kurals && data.kurals.length > 0) {
-              setAthigaramData(data);
-            } else {
+        if (!GOOGLE_SHEET_API_URL.includes("YOUR_SCRIPT_ID")) {
+          fetch(`${GOOGLE_SHEET_API_URL}?athigaram=${no}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data && data.kurals && data.kurals.length > 0) {
+                setAthigaramData(data);
+              } else {
+                const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
+                setAthigaramData({
+                    athigaramNo: no,
+                    athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
+                    kurals: [],
+                    message: "இந்த அதிகாரத்திற்கான குறள்கள் Sheet-ல் சேர்க்கப்படவில்லை."
+                });
+              }
+              setLoading(false);
+            })
+            .catch(error => {
+              console.error("Fetch Data Error: ", error);
               const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
-              setAthigaramData({
-                  athigaramNo: no,
-                  athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
-                  kurals: [],
-                  message: "இந்த அதிகாரத்திற்கான குறள்கள் Sheet-ல் சேர்க்கப்படவில்லை."
-              });
-            }
-          } else {
-            // Fallback for missing URL
-            setTimeout(() => {
-              const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
-              setAthigaramData({
-                  athigaramNo: no,
-                  athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
-                  kurals: [],
-                  message: "உங்களது Google Sheets API URL-ஐ Index.html கோப்பில் சேர்க்கவும்."
+              setAthigaramData({ 
+                  athigaramNo: no, 
+                  athigaram: `அதிகாரம் ${no} - ${athigaramName}`, 
+                  kurals: [], 
+                  message: "நெட்வொர்க் பிழை அல்லது CORS பிழை. உங்களது Apps Script Code.gs-ல் doOptions மற்றும் doGet Headers சரியாக உள்ளதா எனச் சரிபார்க்கவும்." 
               });
               setLoading(false);
-            }, 800);
-            return;
-          }
-        } catch (error) {
-          console.error("Error fetching data: ", error);
-          const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
-          setAthigaramData({ 
-              athigaramNo: no, 
-              athigaram: `அதிகாரம் ${no} - ${athigaramName}`, 
-              kurals: [], 
-              message: "நெட்வொர்க் பிழை அல்லது API URL தவறாக உள்ளது. தயவுசெய்து GOOGLE_SHEET_API_URL ஐச் சரிபார்க்கவும்." 
-          });
+            });
+        } else {
+          // Fallback if URL is missing
+          setTimeout(() => {
+            const athigaramName = ATHIGARAMS_LIST.find(a => a.no === no)?.name || "";
+            setAthigaramData({
+                athigaramNo: no,
+                athigaram: `அதிகாரம் ${no} - ${athigaramName}`,
+                kurals: [],
+                message: "உங்களது Google Sheets API URL-ஐ Index.html கோப்பில் சேர்க்கவும்."
+            });
+            setLoading(false);
+          }, 800);
         }
-        setLoading(false);
       };
 
       const handleKuralSelect = (kural) => {
@@ -340,10 +336,10 @@
                     <div className="text-center p-8 mt-10 bg-white rounded-[2rem] border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)]">
                       <div className="text-6xl mb-6 animate-bounce-subtle">🚧</div>
                       <h3 className="text-xl font-black text-slate-800 mb-2">தரவுகள் தயாராகி வருகிறது!</h3>
-                      <p className="text-[14px] text-slate-500 font-medium leading-relaxed mb-6">நீங்கள் தேர்ந்தெடுத்த அதிகாரத்திற்கான கதைகள் விரைவில் இணைக்கப்படும்.</p>
+                      <p className="text-[14px] text-slate-500 font-medium leading-relaxed mb-6">{athigaramData?.message || "நீங்கள் தேர்ந்தெடுத்த அதிகாரத்திற்கான கதைகள் விரைவில் இணைக்கப்படும்."}</p>
                       <div className="bg-blue-50 p-4 rounded-2xl text-left border border-blue-100">
                          <p className="text-xs font-bold text-blue-800 uppercase mb-1">Developer-க்கான குறிப்பு:</p>
-                         <p className="text-[11px] text-blue-600 leading-relaxed">Google Sheet API URL சரியாகக் கொடுக்கப்பட்டுள்ளதா எனச் சரிபார்க்கவும்.</p>
+                         <p className="text-[11px] text-blue-600 leading-relaxed">இது நெட்வொர்க் பிழையாக இருந்தால், Code.gs-ல் CORS Headers சரியாக உள்ளதா எனச் சரிபார்க்கவும்.</p>
                       </div>
                     </div>
                   )}
